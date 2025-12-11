@@ -1,0 +1,15 @@
+{% set content %}
+<article class="post">
+  <h1>{{ title }}</h1>
+  <p class="post-meta">
+    {% if date %}<time datetime="{{ date_iso }}">{{ date_human }}</time>{% endif %}
+    {% if categories and categories|length > 0 %} — <span class="tags">{{ categories | join(", ") }}</span>{% endif %}
+  </p>
+  <div class="post-content">
+    {{ body | safe }}
+  </div>
+</article>
+{% endset %}
+{% include "base.html" with context %}
+
+
