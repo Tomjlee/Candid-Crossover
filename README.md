@@ -43,6 +43,43 @@ Flags:
 4) Open your site:
 - Double-click `site\index.html` or open it in your browser
 
+Match the original theme (mirror CSS/JS)
+---------------------------------------
+If you want the generated site to look exactly like the live site (same CSS/JS/fonts):
+
+```powershell
+# 1) Mirror the theme from your live URL (downloads CSS/JS to site\assets and writes template partials)
+python .\scripts\mirror_theme.py "https://YOUR-LIVE-SITE.com"
+
+# 2) Rebuild the site using your export (now templates will include the mirrored assets)
+python .\scripts\wxr_to_html.py ".\Squarespace-Wordpress-Export-10-24-2025 (1).xml" --download-media --output .\site --site-title "My Site"
+```
+
+Notes:
+- The mirror step writes `templates\_head_includes.html` and `templates\_footer_includes.html` and downloads assets into `site\assets`.
+- The generator auto-detects those partials and includes them instead of the default stylesheet.
+- If you already manually downloaded your theme assets, you can place them in `site\assets` and hand-edit `templates\_head_includes.html`/`_footer_includes.html` to reference them, e.g.:
+  ```html
+  <link rel="stylesheet" href="{{ base_path }}assets/theme.css">
+  <script src="{{ base_path }}assets/theme.js" defer></script>
+  ```
+
+Offline-only workflow (no live URL)
+-----------------------------------
+If your site isn’t live but you have local CSS/JS files from the old theme:
+
+```powershell
+# Put all your theme files under site\assets (e.g., site\assets\theme.css, site\assets\main.js, etc.)
+
+# Auto-generate the Jinja includes from what's in site\assets
+python .\scripts\generate_theme_includes_from_assets.py --assets-dir .\site\assets --templates-dir .\templates
+
+# Rebuild the site (uses the generated includes instead of the default stylesheet)
+python .\scripts\wxr_to_html.py ".\Squarespace-Wordpress-Export-10-24-2025 (1).xml" --download-media --output .\site --site-title "My Site"
+```
+
+Tip: If you need a specific load order, rename files in `site\assets` so they sort alphabetically (e.g., `00-reset.css`, `10-theme.css`, `20-overrides.css`).
+
 Notes and limitations
 ---------------------
 - Navigation uses top-level published pages ordered by WordPress `menu_order` then title.

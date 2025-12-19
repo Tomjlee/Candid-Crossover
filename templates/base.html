@@ -4,35 +4,46 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ page_title }}{% if site_title %} — {{ site_title }}{% endif %}</title>
-    <link rel="stylesheet" href="{{ base_path }}static/styles.css">
+    {% if theme_head %}
+      {% include "_head_includes.html" %}
+    {% else %}
+      <link rel="stylesheet" href="{{ base_path }}static/styles.css">
+    {% endif %}
   </head>
-  <body>
-    <header class="site-header">
-      <div class="container">
-        <h1 class="site-title"><a href="{{ base_path }}index.html">{{ site_title or "Website" }}</a></h1>
-        {% if nav_pages and nav_pages|length > 0 %}
-        <nav class="site-nav">
-          <ul>
-            {% for nav in nav_pages %}
-              <li><a href="{{ base_path }}{{ nav.url_path }}">{{ nav.title }}</a></li>
-            {% endfor %}
-          </ul>
-        </nav>
-        {% endif %}
-      </div>
-    </header>
+  <body class="{{ body_class or '' }}">
+    {% if not theme_head %}
+      <header class="site-header">
+        <div class="container">
+          <h1 class="site-title"><a href="{{ base_path }}index.html">{{ site_title or "Website" }}</a></h1>
+          {% if nav_pages and nav_pages|length > 0 %}
+          <nav class="site-nav">
+            <ul>
+              {% for nav in nav_pages %}
+                <li><a href="{{ base_path }}{{ nav.url_path }}">{{ nav.title }}</a></li>
+              {% endfor %}
+            </ul>
+          </nav>
+          {% endif %}
+        </div>
+      </header>
 
-    <main class="site-main">
-      <div class="container">
-        {{ content | safe }}
-      </div>
-    </main>
+      <main class="site-main">
+        <div class="container">
+          {{ content | safe }}
+        </div>
+      </main>
 
-    <footer class="site-footer">
-      <div class="container">
-        <p>&copy; {{ current_year }} {{ site_title or "" }}</p>
-      </div>
-    </footer>
+      <footer class="site-footer">
+        <div class="container">
+          <p>&copy; {{ current_year }} {{ site_title or "" }}</p>
+        </div>
+      </footer>
+    {% else %}
+      {{ content | safe }}
+    {% endif %}
+    {% if theme_footer %}
+      {% include "_footer_includes.html" %}
+    {% endif %}
   </body>
   </html>
 
